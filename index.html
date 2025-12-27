@@ -4,52 +4,27 @@
   <meta charset="UTF-8" />
   <title>XTTS Озвучка</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#111; color:#fff; display:flex; justify-content:center; }
-    .box { max-width:500px; margin-top:50px; width:100%; }
-    textarea, select, button { width:100%; margin-top:10px; padding:10px; }
-    audio { width:100%; margin-top:15px; }
-    button { cursor:pointer; }
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 10px;
+      background: #000;
+      text-align: center;
+      font-size: 18px;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 50px);
+      border: none;
+    }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>🎙 Испанская озвучка</h2>
-
-    <select id="voice">
-      <option value="🇪🇸 Основной">🇪🇸 Основной</option>
-      <option value="🎙 Голос 2">🎙 Голос 2</option>
-    </select>
-
-    <textarea id="text" rows="5" placeholder="Введите текст на испанском..."></textarea>
-
-    <button onclick="speak()">Озвучить</button>
-
-    <audio id="audio" controls></audio>
-  </div>
-
-<script>
-async function speak() {
-  const text = document.getElementById("text").value;
-  const voice = document.getElementById("voice").value;
-  if (!text) return alert("Введите текст");
-
-  const SPACE_URL = "https://YOUR_SPACE_NAME.hf.space"; // ← ЗАМЕНИ
-
-  const res = await fetch(SPACE_URL + "/run/predict", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ data: [text, voice] })
-  });
-
-  const json = await res.json();
-
-  const filePath = json.data[0];
-  const audioUrl = SPACE_URL + "/file=" + filePath;
-
-  const audio = document.getElementById("audio");
-  audio.src = audioUrl;
-  audio.load();
-}
-</script>
+  <header>🎙 Испанская озвучка</header>
+  <iframe src="https://vladert12-xtts.hf.space"></iframe>
 </body>
 </html>
