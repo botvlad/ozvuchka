@@ -1,5 +1,3 @@
 TTS==0.22.0
-grاديо
-gradiо
-soundfile
+gradio==4.44.0
 torch

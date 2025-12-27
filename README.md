@@ -1,4 +1,7 @@
-# XTTS Voice Backend
+# XTTS Spanish Voices (Fixed)
 
-Backend для испанской озвучки (XTTS v2).
-Добавь файлы voice_es_1.wav и voice_clone.wav перед запуском.
+Добавь файлы:
+- voice_es_1.wav
+- voice_clone.wav
+
+Затем запусти Space (Gradio, CPU).

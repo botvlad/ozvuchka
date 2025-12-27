@@ -1,58 +1,61 @@
-# ===== COQUI LICENSE =====
 import os
 os.environ["COQUI_TOS_AGREED"] = "1"
 
 import gradio as gr
-from TTS.api import TTS
-import soundfile as sf
 
-VOICES = {
-    "🇪🇸 Основной": "voice_es_1.wav",
-    "🎙 Голос 2": "voice_clone.wav"
-}
+VOICE_1 = "voice_es_1.wav"
+VOICE_2 = "voice_clone.wav"
 
-AVAILABLE_VOICES = {k: v for k, v in VOICES.items() if os.path.exists(v)}
+def load_voices():
+    voices = {}
+    if os.path.exists(VOICE_1):
+        voices["🇪🇸 Основной"] = VOICE_1
+    if os.path.exists(VOICE_2):
+        voices["🎙 Голос 2"] = VOICE_2
+    return voices
 
-if not AVAILABLE_VOICES:
-    raise RuntimeError("❌ Голосовые файлы не найдены")
+voices = load_voices()
 
-tts = TTS(
-    model_name="tts_models/multilingual/multi-dataset/xtts_v2",
-    gpu=False,
-    progress_bar=False
-)
-
-def generate_voice(text, voice_name):
-    if not text or text.strip() == "":
+def generate(text, voice):
+    if not text or voice not in voices:
         return None
 
-    output_path = "output.wav"
+    from TTS.api import TTS
 
+    tts = TTS(
+        model_name="tts_models/multilingual/multi-dataset/xtts_v2",
+        gpu=False
+    )
+
+    out = "output.wav"
     tts.tts_to_file(
         text=text,
-        speaker_wav=AVAILABLE_VOICES[voice_name],
+        speaker_wav=voices[voice],
         language="es",
-        file_path=output_path
+        file_path=out
     )
+    return out
 
-    audio, sr = sf.read(output_path)
-    return sr, audio
+with gr.Blocks() as demo:
+    gr.Markdown("## 🎙 Испанская озвучка (XTTS v2)")
 
-with gr.Blocks(theme=gr.themes.Soft()) as app:
-    gr.Markdown("# 🎙 XTTS — Испанская озвучка")
+    if voices:
+        voice = gr.Dropdown(
+            choices=list(voices.keys()),
+            value=list(voices.keys())[0],
+            label="Голос"
+        )
+    else:
+        voice = gr.Dropdown(
+            choices=["Нет голосов"],
+            value="Нет голосов",
+            label="Голос"
+        )
 
-    voice = gr.Dropdown(
-        choices=list(AVAILABLE_VOICES.keys()),
-        value=list(AVAILABLE_VOICES.keys())[0],
-        label="🎧 Голос"
-    )
+    text = gr.Textbox(label="Текст", lines=5)
+    btn = gr.Button("Озвучить")
+    audio = gr.Audio(type="filepath", label="Результат (можно скачать)")
 
-    text = gr.Textbox(lines=6, placeholder="Введите текст на испанском...")
+    btn.click(generate, [text, voice], audio)
 
-    btn = gr.Button("▶ Озвучить")
-
-    result = gr.Audio(label="🔊 Результат (можно скачать)", type="numpy")
-
-    btn.click(fn=generate_voice, inputs=[text, voice], outputs=result)
-
-app.launch()
+demo.launch(server_name="0.0.0.0", server_port=7860)
