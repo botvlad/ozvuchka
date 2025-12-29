@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>XTTS Озвучка</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-    header {
-      padding: 10px;
-      background: #000;
-      text-align: center;
-      font-size: 18px;
-    }
-    iframe {
-      width: 100%;
-      height: calc(100vh - 50px);
-      border: none;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Spanish TTS</title>
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-  <header>🎙 Испанская озвучка</header>
-  <iframe src="https://vladert12-xtts.hf.space"></iframe>
+  <h2>Озвучка испанского текста</h2>
+
+  <textarea id="text" placeholder="Вставьте текст на испанском"></textarea>
+
+  <select id="voice">
+    <option value="es-ES-Standard-A">Мужской</option>
+    <option value="es-ES-Standard-B">Женский</option>
+  </select>
+
+  <button onclick="generate()">🔊 Озвучить</button>
+
+  <audio id="player" controls></audio><br>
+  <a id="download" download="voice.mp3" style="display:none;">💾 Скачать MP3</a>
+
+  <script src="/app.js"></script>
 </body>
 </html>
